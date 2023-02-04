@@ -51,14 +51,16 @@ def tax_amount_eq(bracket_rate, income, initial_bracket, tax_rate):
 
 def filing_joint():
     filing_joint = input("Are you filing jointly or single? (Y/N) ")
-
     if filing_joint.lower() == "y":
-        return income = int(input("What is your joint annual income? "))
-        # state_income_joint(income)
+        income = int(input("What is your joint annual income? "))
+        print('federal joint')
+        check_tax(income, joint_federal_brackets)
+        # print(income[key])
 
     elif filing_joint.lower() == "n":
         income = int(input("What is your annual income? "))
-         # state_income_single(income)
+        print('federal single')
+        check_tax(income, single_federal_brackets)
     else:
         print("You didn't input an accurate filing status")
         tax_amount = 0
@@ -67,20 +69,22 @@ def check_tax(income, brackets):
     incomes = list(brackets.keys())
 
     for key in range(len(brackets)):
-        # if income is less than 20550 (first bracket
         if income <= incomes[0]:
-            print('if', income[0])
+            print('Your bracket is', incomes[0], key)
+            return incomes[0]
             break
         # if income is in other brackets
         elif income >= incomes[key] and not income > incomes[key+1]:
-            print('elif', incomes[key], incomes[key+1])
+            print('Your bracket', incomes[key+1], key+1)
+            print('your bracket info:', brackets[incomes[key+1]])
+            return incomes[key+1]
             break
         # if income is greater than largest bracket
-        elif income >= 647851:
-            print('income greater than brackets', incomes[key])
+        elif income >= incomes[-1]:
+            print('Your bracket is', incomes[-1], key)
+            return incomes[-1]
             break
         else:
-            # print('else', initial_bracket)
             pass
 
 def calculate_user_tax():
@@ -88,8 +92,7 @@ def calculate_user_tax():
 
     filing_joint()
 
-print(tax_amount)
-
+calculate_user_tax()
 '''
 joint_state brackets = {
     '0 - 21600': [0, income, 0, 0.03078],
