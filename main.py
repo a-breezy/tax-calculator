@@ -13,14 +13,39 @@ ideas for control flow:
 
 '''
 
-tax_amount = 1
+single_federal_brackets = {
+    # bracket: [intial amount, 'income', bracket to be subtracted, tax rate to multiply]
+        # possible refactor to make each object easier to access
+        # 10275: [{'initial amount': 0}, "income", {'bracket': 0},{'tax rate': 0.1}],
+    10275: [0, "income", 0, 0.1],
+    41775: [1027.5, "income", 10275, 0.12],
+    89075: [4807.5, "income", 41775, 0.22],
+    170050: [15213.5, "income", 89075, 0.24],
+    215950: [34647.5, "income", 170050, 0.32],
+    539900: [49335.5, "income", 215950, 0.35],
+    539901: [162718, "income", 539900, 0.37]
+}
 
+
+joint_federal_brackets = {
+    20550: [0, 'income', 0, 0.1],
+    83550: [2055, 'income', 20550, 0.12],
+    178150: [9615, 'income', 83550, 0.22],
+    340100: [30427, 'income', 178150, 0.24],
+    431900: [69295, 'income', 340100, 0.32],
+    647850: [98671, 'income', 431900, 0.35],
+    647851: [174253.5, 'income', 647850, 0.37],
+}
+
+# add single and joint NY State brackets here
+
+tax_amount = 1
 
 def tax_amount_eq(bracket_rate, income, initial_bracket, tax_rate):
     tax_equation = bracket_rate + (income - initial_bracket) * tax_rate
 
     print('your bracket is %s. your income is %s. your initial bracket is %s. your rate is %s' % (
-    bracket_rate, income, initial_bracket, round(rate * 10, 2)))
+    bracket_rate, income, initial_bracket, round(tax_rate * 10, 2)))
     return tax_amount
 
 
@@ -28,61 +53,40 @@ def filing_joint():
     filing_joint = input("Are you filing jointly or single? (Y/N) ")
 
     if filing_joint.lower() == "y":
-        income = int(input("What is your joint annual income? "))
-        state_income_joint(income)
+        return income = int(input("What is your joint annual income? "))
+        # state_income_joint(income)
 
     elif filing_joint.lower() == "n":
         income = int(input("What is your annual income? "))
-        state_income_single(income)
+         # state_income_single(income)
     else:
         print("You didn't input an accurate filing status")
         tax_amount = 0
 
+def check_tax(income, brackets):
+    incomes = list(brackets.keys())
 
-def state_income_joint(income):
-    if income < 21600:
-        tax_amount_eq(0, income, 0, 0.03078)
-    elif income >= 21600 and income < 45000:
-        tax_amount_eq(655, income, 21600, 0.03762)
-    elif income >= 45000 and income < 90000:
-        tax_amount_eq(1545, income, 45000, 0.03819)
-    else:
-        tax_amount_eq(3264, income, 90000, 0.03876)
+    for key in range(len(brackets)):
+        # if income is less than 20550 (first bracket
+        if income <= incomes[0]:
+            print('if', income[0])
+            break
+        # if income is in other brackets
+        elif income >= incomes[key] and not income > incomes[key+1]:
+            print('elif', incomes[key], incomes[key+1])
+            break
+        # if income is greater than largest bracket
+        elif income >= 647851:
+            print('income greater than brackets', incomes[key])
+            break
+        else:
+            # print('else', initial_bracket)
+            pass
 
+def calculate_user_tax():
+    print('Welcome to this New York State and Federal tax calculator')
 
-def state_income_single(income):
-    if income < 10275:
-        tax_amount_eq(0, income, 0, 0.11)
-    elif income >= 10275 and income < 41775:
-        tax_amount_eq(4807.5, income, 10275, 0.12)
-    elif income >= 41775 and income < 89075:
-        tax_amount_eq(4807.5, income, 41775, 0.22)
-    elif income >= 89075 and income < 170050:
-        tax_amount_eq(15213.5, income, 89075, 0.24)
-    elif income >= 170051 and income < 215950:
-        tax_amount_eq(34647.5, income, 170050, 0.32)
-    elif income >= 215951 and income < 539900:
-        tax_amount_eq(49335.5, income, 215950, 0.35)
-    else:
-        tax_amount_eq(162718, income, 539900, 0.37)
-
-
-def fed_income_joint(income):
-    if income < 20550:
-        tax_amount_eq(0, income, 0, 0.1)
-    elif income >= 20550 and income < 83550:
-        tax_amount_eq(2055, income, 20550, 0.12)
-    elif income >= 83550 and income < 178150:
-        tax_amount_eq(9615, income, 83550, 0.22)
-    elif income >= 178151 and income < 340100:
-        tax_amount_eq(30427, income, 178150, 0.24)
-    elif income >= 340100 and income < 431900:
-        tax_amount_eq(69295, income, 340100, 0.32)
-    elif income >= 431900 and income < 647850:
-        tax_amount_eq(98671, income, 431900, 0.35)
-    else:
-        tax_amount_eq(174253.5, income, 647850, 0.37)
-
+    filing_joint()
 
 print(tax_amount)
 
